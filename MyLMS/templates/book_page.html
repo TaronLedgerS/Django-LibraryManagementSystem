@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ book.Title }}</title>
+</head>
+<body>
+<a href="{% url 'MyLMS:home_page' %}">HOME</a>
+<br>
+<h1>Title :{{ book.Title }}</h1>
+<br/>
+<h3>Author:{{ book.Author }}</h3>
+<br>
+<h3>ISBN :{{ book.ISBN }}</h3>
+<br>
+<h3>Publisher :{{ book.Publisher }}</h3>
+<br>
+<h3>Pub_Time :{{ book.Pub_Time }}</h3>
+<br>
+<h3>Position:{{ book.Position }}</h3>
+<br>
+<h3>Number:{{ book.Number }}</h3>
+<br>
+
+<h3>Description:{{ book.Description }}</h3>
+<br>
+
+</body>
+</html>

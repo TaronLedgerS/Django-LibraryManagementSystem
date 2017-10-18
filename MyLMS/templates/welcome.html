@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!-- saved from url=(0027)http://m-union.net.cn/login -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <title>Welcome</title>
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'welcome_files/login.css' %}" >
+  <style>
+  body{height:100%;background:#16a085;overflow:hidden;}
+  canvas{z-index:-1;position:absolute;}
+  </style>
+</head>
+<body>
+
+<!-- form action="" method="POST" -- >
+
+    {% csrf_token %}
+  <dl class="admin_login">
+    <dt >
+        <strong>Welcome to Library Management System</strong>
+        <br>
+        <strong>Who are U?</strong>
+    </dt>
+    <input type="hidden" name="submit_type" value="" id="submit-type"/>
+    <dd>
+        <input type="submit" value="I'm a Reader!" class="submit_btn" id="Reader-form" >
+    </dd>
+    <dd>
+        <input type="submit" value="I'm an Administrator!" class="submit_btn" id="Administrator-form" >
+    </dd>
+  </dl>
+<!--/form -->
+
+  <dl class="admin_login">
+    <dt >
+        <strong>Welcome to Library Management System</strong>
+        <br>
+        <strong>Who are U?</strong>
+    </dt>
+
+    <dd align="center">
+        <a href="{% url 'MyLMS:home_page' %}" class="submit_btn" >I'm a Reader!</a>
+    </dd>
+    <dd align="center">
+        <a href="http://localhost:8000/admin/MyLMS/" class="submit_btn" >I'm an Administrator!</a>
+    </dd>
+  </dl>
+
+  <script src="{% static 'welcome_files\jquery-2.1.1.js.下载' %}"></script>
+  <script src="{% static 'welcome_files\Particleground.js.下载' %}"></script>
+  <script>
+  $(document).ready(function() {
+  //粒子背景特效
+  $('body').particleground({
+  dotColor: '#5cbdaa',
+  lineColor: '#5cbdaa'
+  });
+  });
+  </script>
+
+</body></html>
