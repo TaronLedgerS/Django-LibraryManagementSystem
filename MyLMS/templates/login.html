@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<h1>{{ line }}</h1>
+<form action="{% url 'MyLMS:login_action' %}" method="POST">
+    {% csrf_token %}
+    <label>readername</label><br>
+    <input type="text" name = "readername" value="" /><br>
+    <label>password</label><br>
+    <input type="password" name = "pwd" value="" /><br>
+    <input type="submit" value="Login">
+</form>
+<a href="{% url 'MyLMS:signup_page' %}">Sign up</a>
+</body>
+</html>

@@ -4,7 +4,7 @@
 
   <title>Welcome</title>
   {% load static %}
-  <link rel="stylesheet" type="text/css" href="{% static 'welcome_files/login.css' %}" >
+  <link rel="stylesheet" type="text/css" href="{% static 'welcome_files\login.css' %}" >
   <style>
   body{height:100%;background:#16a085;overflow:hidden;}
   canvas{z-index:-1;position:absolute;}
@@ -12,24 +12,6 @@
 </head>
 <body>
 
-<!-- form action="" method="POST" -- >
-
-    {% csrf_token %}
-  <dl class="admin_login">
-    <dt >
-        <strong>Welcome to Library Management System</strong>
-        <br>
-        <strong>Who are U?</strong>
-    </dt>
-    <input type="hidden" name="submit_type" value="" id="submit-type"/>
-    <dd>
-        <input type="submit" value="I'm a Reader!" class="submit_btn" id="Reader-form" >
-    </dd>
-    <dd>
-        <input type="submit" value="I'm an Administrator!" class="submit_btn" id="Administrator-form" >
-    </dd>
-  </dl>
-<!--/form -->
 
   <dl class="admin_login">
     <dt >
@@ -39,7 +21,7 @@
     </dt>
 
     <dd align="center">
-        <a href="{% url 'MyLMS:home_page' %}" class="submit_btn" >I'm a Reader!</a>
+        <a href="{% url 'MyLMS:login_page' %}" class="submit_btn" >I'm a Reader!</a>
     </dd>
     <dd align="center">
         <a href="http://localhost:8000/admin/MyLMS/" class="submit_btn" >I'm an Administrator!</a>

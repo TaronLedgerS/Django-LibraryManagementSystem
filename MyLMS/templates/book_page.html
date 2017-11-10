@@ -5,7 +5,13 @@
     <title>{{ book.Title }}</title>
 </head>
 <body>
+<h1>Hi {{reader_info.id}}:{{reader_info.Name}}!!!  Welcome to Lib</h1>
 <a href="{% url 'MyLMS:home_page' %}">HOME</a>
+<form action="{% url 'MyLMS:borrow_action' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="book_id" value="{{book.id}}">
+    <input type="submit" value="Pull the Borrow Request">
+</form>
 <br>
 <h1>Title :{{ book.Title }}</h1>
 <br/>
@@ -19,9 +25,8 @@
 <br>
 <h3>Position:{{ book.Position }}</h3>
 <br>
-<h3>Number:{{ book.Number }}</h3>
+<h3>Available:{{ book.Available }}</h3>
 <br>
-
 <h3>Description:{{ book.Description }}</h3>
 <br>
 

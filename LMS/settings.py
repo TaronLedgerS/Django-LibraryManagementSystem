@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'MyLMS',
     'suit',
    #'MyLMS.apps.SuitConfig',
+    'bootstrap_toolkit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -108,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-us'# 'zh_Hans' #
 
 TIME_ZONE = 'UTC'
 
@@ -128,14 +129,16 @@ STATIC_URL = '/static/'
 
 
 SUIT_CONFIG = {  # suit页面配置
-    'ADMIN_NAME': 'Library BackGround Management System',  #登录界面提示
+    'ADMIN_NAME': 'Library BackGround Management System',  #界面提示
     'LIST_PER_PAGE': 20,
+    'MENU_OPEN_FIRST_CHILD': True,
     'MENU': (
+        '-',
+
         {
             'label': 'LMS',
-            'app': 'MyLMS',
-            'icon': 'icon-lock',
-            'models': ('MyLMS.Book','MyLMS.Reader'),
+            'app': 'mylms',
+            'icon': 'icon-leaf',
         },
         '-',
         {'app': 'auth', 'label': 'Authorization', 'icon': 'icon-lock'},

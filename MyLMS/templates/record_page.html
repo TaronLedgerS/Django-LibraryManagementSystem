@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Record_Page</title>
+</head>
+<body>
+<h1>Hi {{reader_info.id}}:{{reader_info.Name}}!!!  Welcome to Lib</h1>
+<h1>Your Borrowed Record List</h1>
+<a href="{% url 'MyLMS:home_page' %}">HOME</a>
+<table border="1">
+<tr>
+  <td>ID</td>
+  <td>Book_Title</td>
+  <td>Created_time</td>
+  <td>Modified_time</td>
+  <td>Status</td>
+</tr>
+{% for record in records  %}
+<tr>
+  <td>{{record.id}}</td>
+  <td><a href="{% url 'MyLMS:book_page' record.Book %}">{{ record.Book.Title }}</a></td>
+  <td>{{record.Created_time}}</td>
+  <td>{{record.Modified_time}}</td>
+  <td>{{record.Status}}</td>
+</tr>
+{% endfor %}
+</table>
+
+
+
+</body>
+</html>
