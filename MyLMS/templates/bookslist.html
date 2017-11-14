@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Borrow Record - LibraryMS</title>
+		<title>Bookslist - LibraryMS</title>
         <link rel="shortcut icon" href="/static/assets/img/favicon.png" type="image/x-icon" />
 		<link rel="stylesheet" href="/static/assets/css/amazeui.css" />
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -23,7 +23,7 @@
 
 			<div class="contain">
 				<ul class="am-nav am-navbar-nav am-navbar-left">
-					<li><h4 class="page-title"> {{ line }} </h4></li>
+					<li><h4 class="page-title">Hi! {{request.session.reader_name}}.o(^▽^)o Welcome to Library!  </h4></li>
 				</ul>
 
 				<ul class="am-nav am-navbar-nav am-navbar-right">
@@ -70,14 +70,15 @@
 
                  <ul class="am-list admin-sidebar-list">
                     <li><a href="{% url 'MyLMS:index' %}"><span class="am-icon-home"></span>  Home </a></li>
-                     <li><a href="{% url 'MyLMS:bookslist' %}"><span class="am-icon-copy"></span>  Books List </a></li>
+                    <li><a href="{% url 'MyLMS:bookslist' %}"><span class="am-icon-copy"></span>  Books List </a></li>
+
                     <li><a href="{% url 'MyLMS:record_page' %}"><span class="am-icon-table"></span>  Borrow Record </a></li>
                     <li><a href=""><span class="fa fa-cog"></span>  Settings </a></li>
                     <li><a href=""><span class="am-icon-line-chart"></span>  Data Chart </a></li>
                       <li>.  </li>
                   </ul>
             </div>
-          </div>
+            </div>
             <!-- sidebar end -->
             <!-- ========== Left Sidebar end ========== -->
 
@@ -95,52 +96,60 @@
                                     <thead>
                                     <tr>
                                         <th class="table-id">ID</th>
-                                        <th class="table-title">Book_Title</th>
-                                        <th class="table-date am-hide-sm-only">Created_time</th>
-                                        <th class="table-date am-hide-sm-only">Modified_time</th>
-                                        <th class="table-set">Status</th>
+                                        <th class="table-title">Title</th>
+                                        <th class="table-type">Author</th>
+                                        <th class="table-author am-hide-sm-only">ISBN</th>
+                                        <th class="table-set">Publisher</th>
+                                        <th class="table-date am-hide-sm-only">Pub_Time</th>
+                                        <th class="table-title">Position</th>
+
                                     </tr>
                                     </thead>
 
                                     <tbody>
-                                      {% for record in records  %}
+                                      {% for book in books.object_list  %}
                                       <tr>
-                                        <td>{{record.id}}</td>
-                                        <td><a href="{% url 'MyLMS:book_page' record.Book %}">{{ record.Book.Title }}</a></td>
-                                        <td>{{record.Created_time}}</td>
-                                        <td class="am-hide-sm-only">{{record.Modified_time}}</td>
-                                        {% if record.Status == 'WAITFORCHECK'  %}
-                                            <td>
-                                                <span class="label label-warning">WAITING</span>
-                                                <a href="{% url 'MyLMS:delete_waiting' record.id %}"> <span class="am-icon-trash-o"> </span></a>
-                                            </td>
+                                        <td>{{ book.id }}</td>
+                                        <td><a href="{% url 'MyLMS:book_page' book.id %}">{{ book.Title }}</a></td>
+                                        <td>{{ book.Author}}</td>
+                                        <td class="am-hide-sm-only">{{book.ISBN}}</td>
+                                        <td class="am-hide-sm-only">{{book.Publisher}}</td>
+                                        <td class="am-hide-sm-only">{{book.Pub_Time}}</td>
+                                        <td>{{book.Position}}</td>
+                                        {% if book.Available   %}
+                                          <td><span class="label label-success"><i class="am-icon-thumbs-o-up"></i></span></td>
+                                        {% else %}
+                                           <td><span class="label label-danger"><i class="am-icon-close"></i></span></td>
                                         {% endif %}
-                                        {% if record.Status == 'RETURNED'  %}
-                                            <td><span class="label label-success">{{record.Status}}.</span></td>
-                                        {% endif %}
-                                        {% if record.Status == 'TURNDOWN'  %}
-                                            <td><span class="label label-primary">{{record.Status}}</span></td>
-                                        {% endif %}
-                                        {% if record.Status == 'BORROWED'  %}
-                                            <td><span class="label label-danger">{{record.Status}}</span></td>
-                                        {% endif %}
+                                        <!--<td>-->
+                                          <!--<div class="am-btn-toolbar">-->
+                                            <!--<div class="am-btn-group am-btn-group-xs">-->
+                                              <!--<button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-pencil-square-o"></span> 编辑</button>-->
+                                              <!--<button class="am-btn am-btn-default am-btn-xs am-hide-sm-only"><span class="am-icon-copy"></span> 复制</button>-->
+                                              <!--<button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only"><span class="am-icon-trash-o"></span> 删除</button>-->
+                                            <!--</div>-->
+                                          <!--</div>-->
+                                        <!--</td>-->
                                       </tr>
                                       {% endfor %}
                                       </tbody>
                                 </table>
                                 <div class="am-cf">
-                                  Currently displayed {{ records | length }} records/ A total of {{ recordsall }} records here
+                                  Currently displayed {{ books | length }} books / A total of {{ booksall }} books here
                                   <div class="am-fr">
                                     <ul class="am-pagination">
-                                        {% if records.has_previous %}
-                                          <li><a href="?page={{ records.previous_page_number }}">«</a></li>
+                                        {% if books.has_previous %}
+                                          <li><a href="?page={{ books.previous_page_number }}">«</a></li>
                                         {% endif %}
-                                          Page {{ records.number }} of {{ records.paginator.num_pages }}.
-                                        {% if records.has_next %}
-                                          <li><a href="?page={{ records.next_page_number }}">»</a></li>
+                                        <!--{# books.paginator.number_pages 返回总页数 #}-->
+                                          Page {{ books.number }} of {{ books.paginator.num_pages }}.
+                                        {% if books.has_next %}
+                                          <li><a href="?page={{ books.next_page_number }}">»</a></li>
                                         {% endif %}
-                                      {% for page_number in records.paginator.page_range %}
-                                      {% ifequal page_number  records.number %}
+                                      <!--{# books.paginator.page_range 这个函数返回包含一个所有页码数的 range 对象 #}-->
+                                      <!--{# 即 range(1, books.paginator.num_pages + 1) #}-->
+                                      {% for page_number in books.paginator.page_range %}
+                                      {% ifequal page_number  books.number %}
                                         <li class="am-active"><a href="#">{{ page_number }}</a></li>
                                       {% else %}
                                         <li><a href="?page={{ page_number }}">{{ page_number }}</a></li>
@@ -174,4 +183,16 @@
 	</body>
 
 </html>
+
+
+
+
+
+<form action="{% url 'MyLMS:search_action' %}" method="POST">
+    {% csrf_token %}
+    <label>search by title</label><br>
+    <input type="text" name = "title" value="" /><br>
+    <input type="submit" value="Submit">
+</form>
+
 

@@ -24,7 +24,7 @@ class Reader(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='Reader_ID')
     Name = models.CharField(max_length=16, null=False,unique=True)
     Password = models.CharField(max_length=16, null=False)
-    Active = models.BooleanField(default=1)
+    Active = models.BooleanField(default=0)
     def __unicode__(self):
         return str(self.id)
 

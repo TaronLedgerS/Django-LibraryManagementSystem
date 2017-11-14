@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'MyLMS',
     'suit',
    #'MyLMS.apps.SuitConfig',
-    'bootstrap_toolkit',
+   # 'bootstrap_toolkit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
