@@ -25,14 +25,14 @@
 				<ul class="am-nav am-navbar-nav am-navbar-left">
 					<li><h4 class="page-title">Hi! {{request.session.reader_name}}.o(^▽^)o Welcome to Library!  </h4></li>
 				</ul>
-
 				<ul class="am-nav am-navbar-nav am-navbar-right">
 					<li class="inform"><i class="am-icon-bell-o" aria-hidden="true"></i></li>
 					<li class="hidden-xs am-hide-sm-only">
-                        <form role="search" class="app-search">
-
-                            <input type="text" placeholder="Search..." class="form-control">
-                            <a href=""><img src="/static/assets/img/search.png"></a>
+                        <form role="search" class="app-search" action="{% url 'MyLMS:search_action' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="text" name = "title" value="" placeholder="Search..." class="form-control">
+                            <img src="/static/assets/img/search.png">
+                            <input type="submit" value="">
                         </form>
                     </li>
 				</ul>
@@ -54,8 +54,7 @@
                     <h5>{{request.session.reader_name}}</h5>
                     <ul class="list-inline">
                         <li>
-                            <a href="{% url 'MyLMS:index' %}">
-                                <!--TODO-->
+                            <a href="{% url 'MyLMS:settings' %}">
                                 <button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="fa fa-cog"> </span> Settings</button>
                             </a>
                         </li>
@@ -73,7 +72,7 @@
                     <li><a href="{% url 'MyLMS:bookslist' %}"><span class="am-icon-copy"></span>  Books List </a></li>
 
                     <li><a href="{% url 'MyLMS:record_page' %}"><span class="am-icon-table"></span>  Borrow Record </a></li>
-                    <li><a href=""><span class="fa fa-cog"></span>  Settings </a></li>
+                    <li><a href="{% url 'MyLMS:settings' %}"><span class="fa fa-cog"></span>  Settings </a></li>
                     <li><a href=""><span class="am-icon-line-chart"></span>  Data Chart </a></li>
                       <li>.  </li>
                   </ul>
@@ -121,15 +120,6 @@
                                         {% else %}
                                            <td><span class="label label-danger"><i class="am-icon-close"></i></span></td>
                                         {% endif %}
-                                        <!--<td>-->
-                                          <!--<div class="am-btn-toolbar">-->
-                                            <!--<div class="am-btn-group am-btn-group-xs">-->
-                                              <!--<button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-pencil-square-o"></span> 编辑</button>-->
-                                              <!--<button class="am-btn am-btn-default am-btn-xs am-hide-sm-only"><span class="am-icon-copy"></span> 复制</button>-->
-                                              <!--<button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only"><span class="am-icon-trash-o"></span> 删除</button>-->
-                                            <!--</div>-->
-                                          <!--</div>-->
-                                        <!--</td>-->
                                       </tr>
                                       {% endfor %}
                                       </tbody>
@@ -188,11 +178,6 @@
 
 
 
-<form action="{% url 'MyLMS:search_action' %}" method="POST">
-    {% csrf_token %}
-    <label>search by title</label><br>
-    <input type="text" name = "title" value="" /><br>
-    <input type="submit" value="Submit">
-</form>
+
 
 

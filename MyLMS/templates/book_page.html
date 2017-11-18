@@ -46,7 +46,7 @@
                     <h5>{{request.session.reader_name}}</h5>
                     <ul class="list-inline">
                         <li>
-                            <a href="{% url 'MyLMS:index' %}">
+                            <a href="{% url 'MyLMS:settings' %}}">
 
                                 <button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="fa fa-cog"> </span> Settings</button>
                             </a>
@@ -64,7 +64,7 @@
                     <li><a href="{% url 'MyLMS:index' %}"><span class="am-icon-home"></span>  Home </a></li>
                      <li><a href="{% url 'MyLMS:bookslist' %}"><span class="am-icon-copy"></span>  Books List </a></li>
                     <li><a href="{% url 'MyLMS:record_page' %}"><span class="am-icon-table"></span>  Borrow Record </a></li>
-                    <li><a href=""><span class="fa fa-cog"></span>  Settings </a></li>
+                    <li><a href="{% url 'MyLMS:settings' %}"><span class="fa fa-cog"></span>  Settings </a></li>
                      <li><a href=""><span class="am-icon-line-chart"></span>  Data Chart </a></li>
                      <li>.  </li>
                   </ul>

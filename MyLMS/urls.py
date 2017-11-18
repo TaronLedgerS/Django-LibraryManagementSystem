@@ -17,9 +17,7 @@ urlpatterns = [
     url(r'^record/delete(?P<record_id>[0-9]+)$', views.delete_waiting,name='delete_waiting'),
     url(r'^book/(?P<book_id>[0-9]+)$', views.book_page,name='book_page'),
     url(r'^record/borrow$', views.borrow_action,name='borrow_action'),
-
-
-url(r'^bookslist/search/$', views.search_action,name='search_action'),
-
+    url(r'^bookslist/search/$', views.search_action,name='search_action'),
+    url(r'^settings/$', views.settings, name='settings'),
 
 ]

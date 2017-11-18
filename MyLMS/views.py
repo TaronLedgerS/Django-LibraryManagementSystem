@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.http import  HttpResponse,HttpResponseRedirect
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
 from . import models
-from django.db.models import Q
+from django.db.models import Q,Count,Sum
 
 
 #欢迎界面
@@ -44,13 +43,19 @@ def signup_page(request):
 def signup_action(request):
     namefield = request.POST.get('namefield', None)
     pwdfield = request.POST.get('pwdfield', None)
+    scfield = request.POST.get('scfield', None)
     if namefield :
         r = models.Reader.objects.filter(Name=namefield).first()
         if r:
             return render(request, 'signup.html',
                           {'line': 'Signup failure!Readername has been used!'})
+        if scfield:
+            r = models.Reader.objects.filter(Name=namefield).first()
+            if r:
+                return render(request, 'signup.html',
+                              {'line': 'Signup failure!StudentCard has been used!'})
         if pwdfield:
-            r = models.Reader(Name=namefield, Password = pwdfield)
+            r = models.Reader(Name=namefield, Password = pwdfield,StudentCard = scfield)
             r.save()
             return render(request, 'login.html', {'line': 'Signup Success!'})
     return render(request, 'signup.html', {'line': 'Signup failure!Please checkout your readername and your password!'})
@@ -67,7 +72,47 @@ def logout_action(request):
 def index(request):
     if "reader_id" not in request.session:
         return render(request, 'login.html', {'line': 'Please login first!'})
-    return render(request,'index.html')
+    #最活跃的3个用户
+    readers = models.Record.objects.values_list('Reader').annotate(Borrow_num=Count('id')).order_by('-Borrow_num')
+    reader = models.Reader.objects.get(pk=readers[0][0])
+    Top1={'id':readers[0][0],'name':reader.Name,'Act_times':readers[0][1]}
+    reader = models.Reader.objects.get(pk=readers[1][0])
+    Top2 = {'id': readers[1][0], 'name': reader.Name, 'Act_times': readers[1][1]}
+    reader = models.Reader.objects.get(pk=readers[2][0])
+    Top3 = {'id': readers[2][0], 'name': reader.Name, 'Act_times': readers[2][1]}
+    #最新增加的7本书记
+    Newbooks = models.Book.objects.all().order_by('-id')[0:7]
+    #可用/总数目
+    sum = models.Book.objects.all().count()
+    available = models.Book.objects.filter(Available=True).count()
+    per = (float (available) / float (sum) )*100
+    booksum = {'sum':sum,'available':available,'per':int(per)}
+    #借书记录
+    records = models.Record.objects.filter(Reader=request.session["reader_id"]).values_list('Status').annotate(Count('id'))
+    BORROWED = 0
+    WAITFORCHECK = 0
+    TURNDOWN = 0
+    DEMAGE = 0
+    RETURNED = 0
+    for item in records:
+        if item[0] == 'BORROWED':
+            BORROWED=item[1]
+        if item[0] == 'WAITFORCHECK':
+            WAITFORCHECK=item[1]
+        if item[0] == 'TURNDOWN':
+            TURNDOWN=item[1]
+        if item[0] == 'DEMAGE':
+            DEMAGE=item[1]
+        if item[0] == 'RETURNED':
+            RETURNED=item[1]
+    #罚款总数
+    record = models.Record.objects.filter(Reader=request.session["reader_id"])
+    t = record.aggregate(Sum('Fine'))['Fine__sum']
+    if t:
+        TotalFine = t
+    else:
+        TotalFine = 0
+    return render(request,'index.html',{'Top1':Top1,'Top2':Top2,'Top3':Top3,'Newbooks':Newbooks,'booksum':booksum,'TotalFine':TotalFine,'BORROWED':BORROWED,'WAITFORCHECK':WAITFORCHECK,'TURNDOWN':TURNDOWN,'DEMAGE':DEMAGE,'RETURNED':RETURNED})
 
 #图书馆书单
 def bookslist(request):
@@ -128,7 +173,7 @@ def borrow_action(request):
     book = models.Book.objects.get(pk=Bookid)
     # 最多同时借两本书
     records = models.Record.objects.filter(Reader=request.session["reader_id"]).filter(Q(Status='BORROWED')|Q(Status='WAITFORCHECK'))
-    if records.count > 1:
+    if records.count() > 1:
         return render(request, 'book_page.html',
                       {'book': book, 'line': "You have already borrowed or tried to borrow Two book!"})
     # 不能借同一本书
@@ -148,16 +193,34 @@ def borrow_action(request):
 
 
 
-
-
 #搜索并返回结果
 def search_action(request):
-    title = request.POST.get('title', None)
-    if title:
-        books = models.Book.objects.filter(Title=title)
-        return render(request, 'bookslist.html', {'books': books})
+    if "reader_id" in request.session:
+        title = request.POST.get('title', None)
+        if title:
+            books = models.Book.objects.filter(Title=title)
+        else:
+            books = models.Book.objects.all()
+        booksall = books.count()
+        limit = 13  # 每页显示的记录数
+        paginator = Paginator(books, limit)  # 实例化一个分页对象
+        page = request.GET.get('page')  # 获取页码
+        try:
+            books = paginator.page(page)  # 获取某页对应的记录
+        except PageNotAnInteger:  # 如果页码不是个整数
+            books = paginator.page(1)  # 取第一页的记录
+        except EmptyPage:  # 如果页码太大，没有相应的记录
+            books = paginator.page(paginator.num_pages)  # 取最后一页的记录
+        reader = models.Reader.objects.get(pk=request.session["reader_id"])
+        return render(request, 'bookslist.html', {'books': books,'booksall': booksall, 'reader' : reader})
     else:
-        books = models.Book.objects.all()
-        return render(request, 'bookslist.html', {'books': books})
+        return render(request, 'login.html', {'line': 'Please login first!'})
 
+
+def settings(request):
+    if "reader_id" not in request.session:
+        return render(request, 'login.html', {'line': 'Please login first!'})
+    reader = models.Reader.objects.get(pk=request.session["reader_id"])
+    return render(request,'settings.html',{'reader':reader})
+    pass
 
